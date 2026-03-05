@@ -1,0 +1,1 @@
+"""CashCheck src package."""
