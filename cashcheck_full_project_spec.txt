@@ -1,0 +1,446 @@
+
+CASHCHECK – MASTER PROJECT SPECIFICATION
+========================================
+
+Version: 1.0
+Purpose: Complete technical and functional specification for the CashCheck system.
+
+---------------------------------------------------------------------
+1. PROJECT OVERVIEW
+---------------------------------------------------------------------
+
+CashCheck is a financial reconciliation and cash register audit system designed
+for restaurants, pizzerias, bars, and small retail businesses.
+
+The main goal of the system is to automate the daily cash closing process and
+eliminate manual reconciliation using spreadsheets.
+
+Typical businesses run several sales terminals, card machines, and delivery
+platforms. At the end of the day the operator must verify whether:
+
+    Expected sales total == Actual counted money
+
+Most POS systems only provide the expected value but do not verify the physical
+cash and payment confirmations.
+
+CashCheck solves this by providing:
+
+• Automated reconciliation
+• Document recognition (OCR)
+• Evidence storage
+• Multi‑terminal consolidation
+• Multi‑tenant architecture
+• Financial audit traceability
+
+---------------------------------------------------------------------
+2. CORE PROBLEM
+---------------------------------------------------------------------
+
+In most restaurants the closing process involves:
+
+1. POS system shows expected total
+2. Operator prints machine reports
+3. Cash is counted manually
+4. Values are written in Excel
+5. Someone verifies totals manually
+
+Problems:
+
+• Human errors
+• Time consuming
+• Lack of traceability
+• Fraud risks
+• No central audit trail
+
+Example:
+
+POS shows:
+Total Sales = 3250€
+
+Actual counted values:
+
+Cash = 500€
+Cards = 2500€
+Pix = 200€
+
+Expected = 3250€
+Actual = 3200€
+
+Difference = -50€
+
+The system should automatically detect this discrepancy.
+
+---------------------------------------------------------------------
+3. SYSTEM OBJECTIVES
+---------------------------------------------------------------------
+
+CashCheck aims to:
+
+• Reduce cash closing time to under 3 minutes
+• Automatically reconcile payments
+• Provide document‑based validation
+• Store operational history
+• Allow financial audits
+• Detect inconsistencies early
+
+---------------------------------------------------------------------
+4. SYSTEM ARCHITECTURE
+---------------------------------------------------------------------
+
+Architecture Overview
+
+    Streamlit / Web App
+            │
+            │
+        Python Backend
+            │
+            │
+        Airtable Database
+
+Components:
+
+1) User Interface (Streamlit or Spark)
+2) Python backend services
+3) Airtable database layer
+4) OCR processing pipeline
+5) AI agent assistance layer
+
+---------------------------------------------------------------------
+5. MULTI‑TENANT DESIGN
+---------------------------------------------------------------------
+
+The system supports multiple businesses.
+
+Example tenants:
+
+• Casa da Pizza
+• Julipan
+
+Each tenant may have:
+
+• its own terminals
+• its own payment methods
+• its own cash closings
+
+Two architecture options exist.
+
+Option A (Recommended)
+
+GLOBAL BASE
+    Tenants
+    Users
+    Suppliers
+    PaymentMethods
+
+TENANT BASES
+    Closings
+    CashMovements
+    Evidence
+
+Option B
+
+Single base with Tenant field in every table.
+
+---------------------------------------------------------------------
+6. DATABASE MODEL (AIRTABLE)
+---------------------------------------------------------------------
+
+GLOBAL TABLES
+
+Tenants
+
+Fields:
+TenantId
+Name
+Active
+OperationalBaseId
+DefaultTolerance
+
+Users
+
+Fields:
+Name
+Email
+Tenant
+Role
+Active
+
+PaymentMethods
+
+Examples:
+Cash
+Pix
+Credit Card
+Debit Card
+Ticket
+Check
+
+Suppliers
+
+SupplierName
+CNPJ
+Contact
+Email
+Phone
+
+---------------------------------------------------------------------
+7. OPERATIONAL TABLES
+---------------------------------------------------------------------
+
+Closings
+
+Represents one daily closing.
+
+Fields:
+ClosingId
+Date
+Operator
+Shift
+ExpectedTotal
+SettledTotal
+Difference
+Status
+Notes
+
+Formula:
+
+Difference = ExpectedTotal - SettledTotal
+
+---------------------------------------------------------------------
+
+CashMovements
+
+Central financial movement table.
+
+Fields:
+
+MovementId
+Closing
+MovementType
+PaymentMethod
+Terminal
+Amount
+Supplier
+Description
+Evidence
+CreatedAt
+
+Movement types:
+
+Sale
+Expense
+Cash Withdrawal (Sangria)
+Courier Payment
+Adjustment
+
+---------------------------------------------------------------------
+
+Evidence
+
+Stores documents and images.
+
+Fields:
+
+EvidenceId
+Closing
+Movement
+EvidenceType
+Files
+OCRText
+OCRParsed
+OCRStatus
+
+---------------------------------------------------------------------
+8. SYSTEM WORKFLOW
+---------------------------------------------------------------------
+
+Step 1 – Create closing
+
+Operator selects:
+
+Tenant
+Date
+Shift
+
+Step 2 – Insert POS totals
+
+Example:
+
+POS1 = 1200
+POS2 = 800
+POS3 = 500
+
+ExpectedTotal = 2500
+
+Step 3 – Upload evidence
+
+Operator uploads:
+
+• card machine report
+• POS report
+• receipts
+• cash count photo
+
+Step 4 – OCR processing
+
+System extracts totals automatically.
+
+Step 5 – Record movements
+
+Examples:
+
+Cash = 400
+Pix = 300
+Cards = 1700
+Expenses = 50
+
+Step 6 – Automatic reconciliation
+
+SettledTotal = 400 + 300 + 1700 - 50
+
+Difference calculated automatically.
+
+---------------------------------------------------------------------
+9. OCR PROCESSING
+---------------------------------------------------------------------
+
+The OCR module extracts numeric totals from images.
+
+Libraries:
+
+pytesseract
+opencv
+pillow
+
+Pipeline:
+
+Image → preprocessing → OCR → number extraction → validation
+
+Example code:
+
+import pytesseract
+import cv2
+import re
+
+text = pytesseract.image_to_string(image)
+
+numbers = re.findall(r'\d+\.\d{2}', text)
+
+---------------------------------------------------------------------
+10. STREAMLIT APPLICATION
+---------------------------------------------------------------------
+
+Main pages:
+
+Dashboard
+
+Displays:
+Today's closings
+Recent discrepancies
+Movement statistics
+
+New Closing
+
+Create new closing record.
+
+Movements
+
+Add financial movements.
+
+Evidence
+
+Upload images and documents.
+
+Reconciliation
+
+Displays totals and difference.
+
+---------------------------------------------------------------------
+11. AI AGENT ROLE
+---------------------------------------------------------------------
+
+The AI agent assists operators.
+
+Capabilities:
+
+• OCR validation
+• discrepancy explanation
+• anomaly detection
+• operational insights
+
+Examples:
+
+“Machine report shows 1750€, but recorded value is 1700€. Please verify.”
+
+---------------------------------------------------------------------
+12. SECURITY
+---------------------------------------------------------------------
+
+Basic controls:
+
+• user roles
+• tenant separation
+• audit logs
+
+Future improvements:
+
+• authentication tokens
+• encrypted secrets
+• role‑based access
+
+---------------------------------------------------------------------
+13. ANALYTICS
+---------------------------------------------------------------------
+
+Possible reports:
+
+• discrepancy frequency
+• operator performance
+• terminal reliability
+• weekly reconciliation summary
+
+---------------------------------------------------------------------
+14. FUTURE FEATURES
+---------------------------------------------------------------------
+
+POS integrations
+iFood / Uber Eats integration
+Fraud detection algorithms
+Predictive discrepancy alerts
+Automated reconciliation suggestions
+
+---------------------------------------------------------------------
+15. PROJECT ROADMAP
+---------------------------------------------------------------------
+
+Phase 1 – MVP
+
+Database structure
+Streamlit interface
+Manual reconciliation
+
+Phase 2 – Automation
+
+OCR extraction
+Automatic totals
+
+Phase 3 – Intelligence
+
+AI insights
+Fraud detection
+Operational analytics
+
+---------------------------------------------------------------------
+16. PROJECT GOAL
+---------------------------------------------------------------------
+
+CashCheck aims to transform the cash closing process from a manual,
+error‑prone task into a fast and auditable automated workflow.
+
+Target:
+
+Cash closing completed in under 3 minutes with full traceability.
+
+---------------------------------------------------------------------
+
+END OF DOCUMENT
