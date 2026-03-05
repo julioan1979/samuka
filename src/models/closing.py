@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Optional
 
+SHIFTS = ["Morning", "Afternoon", "Night", "Full Day"]
+
 
 @dataclass
 class Closing:
@@ -12,6 +14,8 @@ class Closing:
     id: Optional[str] = None
     tenant_id: str = ""
     closing_date: Optional[date] = None
+    operator: Optional[str] = None
+    shift: Optional[str] = None
     pos_total: float = 0.0
     expected_total: float = 0.0
     settled_total: float = 0.0
@@ -52,6 +56,8 @@ class Closing:
             id=record.get("id"),
             tenant_id=fields.get("TenantId", ""),
             closing_date=closing_date,
+            operator=fields.get("Operator"),
+            shift=fields.get("Shift"),
             pos_total=float(fields.get("PosTotal", 0.0)),
             expected_total=float(fields.get("ExpectedTotal", 0.0)),
             settled_total=float(fields.get("SettledTotal", 0.0)),
@@ -73,6 +79,10 @@ class Closing:
         }
         if self.closing_date:
             data["ClosingDate"] = self.closing_date.isoformat()
+        if self.operator:
+            data["Operator"] = self.operator
+        if self.shift:
+            data["Shift"] = self.shift
         if self.notes:
             data["Notes"] = self.notes
         if self.terminal:

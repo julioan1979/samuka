@@ -9,9 +9,10 @@ CashCheck automates daily cash closing verification by comparing expected totals
 ## Features
 
 - 📊 **Dashboard** – today's closings, discrepancies, and total cash movements
-- 📋 **New Closing** – create a closing record, enter POS total, reconcile
+- 📋 **New Closing** – create a closing record (operator, shift, terminal, POS total)
 - 💵 **Cash Movements** – log sales, expenses, sangrias, courier payments, and adjustments
 - 📎 **Upload Evidence** – upload receipt images, run OCR to extract totals automatically
+- 🔄 **Reconciliation** – view payment breakdown, totals, and difference for any closing
 - 🏢 **Multi-tenant** – each business has its own isolated Airtable base
 
 ---
@@ -61,6 +62,7 @@ ui/
     closing_page.py
     movements_page.py
     evidence_page.py
+    reconciliation_page.py
 
 docs/
     ARCHITECTURE.md

@@ -60,6 +60,8 @@ One instance per tenant.
 |---|---|---|
 | ClosingDate | Date | Date of the daily closing |
 | TenantId | Single line text | Tenant identifier |
+| Operator | Single line text | Name of the operator/cashier |
+| Shift | Single select | Morning, Afternoon, Night, Full Day |
 | PosTotal | Currency | Total reported by POS system |
 | ExpectedTotal | Currency | Total expected (usually = PosTotal) |
 | SettledTotal | Currency | Total calculated from movements |

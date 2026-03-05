@@ -6,6 +6,7 @@ from typing import List, Optional
 import streamlit as st
 
 from src.airtable_client import GlobalBaseClient
+from src.models.closing import SHIFTS
 from src.models.tenant import Tenant
 from src.services.closing_service import ClosingService
 
@@ -39,8 +40,15 @@ def show_closing_page() -> None:
     )
 
     closing_date = st.date_input("Closing Date", value=date.today())
-    pos_total = st.number_input("POS Total (R$)", min_value=0.0, step=0.01, format="%.2f")
-    terminal = st.text_input("Terminal (optional)")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        operator = st.text_input("Operator / Cashier")
+        terminal = st.text_input("Terminal (optional)")
+    with col2:
+        shift = st.selectbox("Shift", SHIFTS)
+        pos_total = st.number_input("POS Total (R$)", min_value=0.0, step=0.01, format="%.2f")
+
     notes = st.text_area("Notes (optional)")
 
     if st.button("Create Closing", type="primary"):
@@ -57,6 +65,8 @@ def show_closing_page() -> None:
                 tenant_id=selected_tenant.id or "",
                 closing_date=closing_date,
                 pos_total=pos_total,
+                operator=operator or None,
+                shift=shift or None,
                 terminal=terminal or None,
                 notes=notes or None,
             )
