@@ -3,12 +3,13 @@
 ## v0.1.0 (Current) – Starter Project
 
 - [x] Multi-tenant Airtable integration (Global Base + per-tenant Operational Bases)
-- [x] Closing model with reconciliation logic
+- [x] Closing model with reconciliation logic (operator + shift fields)
 - [x] CashMovement model with signed amounts
 - [x] OCR module (pytesseract + OpenCV)
-- [x] Streamlit UI: Dashboard, New Closing, Cash Movements, Upload Evidence
+- [x] Streamlit UI: Dashboard, New Closing, Cash Movements, Upload Evidence, Reconciliation
 - [x] Environment-based configuration
 - [x] Basic logging
+- [x] Automated test suite (pytest)
 
 ---
 

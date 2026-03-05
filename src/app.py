@@ -40,6 +40,7 @@ PAGES = {
     "📋 New Closing": "closing",
     "💵 Cash Movements": "movements",
     "📎 Upload Evidence": "evidence",
+    "🔄 Reconciliation": "reconciliation",
 }
 
 with st.sidebar:
@@ -74,3 +75,7 @@ elif page_key == "movements":
 elif page_key == "evidence":
     from ui.evidence_page import show_evidence_page
     show_evidence_page()
+
+elif page_key == "reconciliation":
+    from ui.reconciliation_page import show_reconciliation_page
+    show_reconciliation_page()

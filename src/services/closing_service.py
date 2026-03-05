@@ -42,6 +42,8 @@ class ClosingService:
         tenant_id: str,
         closing_date: date,
         pos_total: float,
+        operator: Optional[str] = None,
+        shift: Optional[str] = None,
         terminal: Optional[str] = None,
         notes: Optional[str] = None,
     ) -> Closing:
@@ -52,6 +54,8 @@ class ClosingService:
             tenant_id: Airtable record ID of the tenant.
             closing_date: The date of the closing.
             pos_total: The POS-reported total for the day.
+            operator: Optional name of the operator/cashier.
+            shift: Optional shift identifier (e.g. Morning, Afternoon, Night).
             terminal: Optional terminal name/identifier.
             notes: Optional free-text notes.
 
@@ -63,6 +67,8 @@ class ClosingService:
             closing_date=closing_date,
             pos_total=pos_total,
             expected_total=pos_total,
+            operator=operator,
+            shift=shift,
             terminal=terminal,
             notes=notes,
         )
